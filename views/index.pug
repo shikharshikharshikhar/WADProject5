@@ -1,0 +1,127 @@
+extends layout
+
+block content
+    .container-fluid
+        .row.mb-4
+            .col-12
+                h1.display-4.text-center.mb-4
+                    i.fas.fa-address-book.me-3.text-primary
+                    | Contact Manager
+                
+                if !isAuthenticated
+                    .alert.alert-info.text-center
+                        i.fas.fa-info-circle.me-2
+                        | Welcome! You can view contacts, but 
+                        a.alert-link(href="/auth/login") log in
+                        |  to add, edit, or delete contacts.
+
+        .row
+            // Left Column: Contact List
+            .col-lg-6
+                .card.shadow
+                    .card-header.bg-primary.text-white
+                        .d-flex.justify-content-between.align-items-center
+                            h4.mb-0
+                                i.fas.fa-list.me-2
+                                | Contacts
+                            if isAuthenticated
+                                a.btn.btn-light.btn-sm(href="/contacts/add")
+                                    i.fas.fa-plus.me-1
+                                    | Add Contact
+                    
+                    .card-body.p-0
+                        if contacts && contacts.length > 0
+                            .table-responsive
+                                table.table.table-hover.table-striped.mb-0
+                                    thead.table-dark
+                                        tr
+                                            th Name
+                                            th Address
+                                            th Phone
+                                            th Email
+                                            if isAuthenticated
+                                                th.text-center Actions
+                                    tbody
+                                        each contact in contacts
+                                            tr.contact-row(
+                                                data-lat=contact.latitude || 0,
+                                                data-lng=contact.longitude || 0,
+                                                data-name=`${contact.firstName} ${contact.lastName}`,
+                                                style="cursor: pointer;"
+                                            )
+                                                td
+                                                    .fw-bold #{contact.title} #{contact.firstName} #{contact.lastName}
+                                                    if contact.latitude && contact.longitude && contact.latitude !== 0 && contact.longitude !== 0
+                                                        small.text-muted
+                                                            i.fas.fa-map-marker-alt.me-1
+                                                            | Click to view on map
+                                                td 
+                                                    if contact.address
+                                                        #{contact.address}
+                                                    else
+                                                        span.text-muted No address
+                                                td
+                                                    if contact.phone
+                                                        a(href=`tel:${contact.phone}`) #{contact.phone}
+                                                    else
+                                                        span.text-muted No phone
+                                                td
+                                                    if contact.email
+                                                        a(href=`mailto:${contact.email}`) #{contact.email}
+                                                    else
+                                                        span.text-muted No email
+                                                if isAuthenticated
+                                                    td.text-center
+                                                        .btn-group.btn-group-sm
+                                                            a.btn.btn-outline-primary(href=`/contacts/${contact.id}/edit`, title="Edit")
+                                                                i.fas.fa-edit
+                                                            button.btn.btn-outline-danger.delete-btn(
+                                                                data-contact-id=contact.id,
+                                                                data-contact-name=`${contact.firstName} ${contact.lastName}`,
+                                                                title="Delete"
+                                                            )
+                                                                i.fas.fa-trash
+                        else
+                            .text-center.p-5
+                                i.fas.fa-address-book.fa-3x.text-muted.mb-3
+                                h5.text-muted No contacts yet
+                                p.text-muted Get started by adding your first contact!
+                                if isAuthenticated
+                                    a.btn.btn-primary(href="/contacts/add")
+                                        i.fas.fa-plus.me-2
+                                        | Add Your First Contact
+                                else
+                                    a.btn.btn-outline-primary(href="/auth/login")
+                                        i.fas.fa-sign-in-alt.me-2
+                                        | Login to Add Contacts
+
+            // Right Column: Map
+            .col-lg-6
+                .card.shadow
+                    .card-header.bg-success.text-white
+                        h4.mb-0
+                            i.fas.fa-map.me-2
+                            | Map View
+                    .card-body.p-0
+                        #map-container
+                            #map
+
+        // Contact deletion modal
+        .modal.fade#deleteModal(tabindex="-1")
+            .modal-dialog
+                .modal-content
+                    .modal-header
+                        h5.modal-title
+                            i.fas.fa-exclamation-triangle.text-warning.me-2
+                            | Confirm Deletion
+                        button.btn-close(type="button", data-bs-dismiss="modal")
+                    .modal-body
+                        p Are you sure you want to delete this contact?
+                        p.fw-bold#contactToDelete
+                    .modal-footer
+                        button.btn.btn-secondary(type="button", data-bs-dismiss="modal") Cancel
+                        button.btn.btn-danger#confirmDelete Permanently Delete
+
+block scripts
+    script(src="/js/map.js")
+    script(src="/js/contacts.js")
