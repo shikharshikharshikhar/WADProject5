@@ -24,8 +24,20 @@ const redirectIfAuthenticated = (req, res, next) => {
     }
 };
 
+// Check if user owns resource (for future use)
+const checkOwnership = (req, res, next) => {
+    // For now, all authenticated users can access all contacts
+    // You could extend this to have user-specific contacts
+    if (!req.session.user) {
+        req.session.returnTo = req.originalUrl;
+        return res.redirect('/auth/login?error=auth_required');
+    }
+    next();
+};
+
 module.exports = {
     requireAuth,
     optionalAuth,
-    redirectIfAuthenticated
+    redirectIfAuthenticated,
+    checkOwnership
 };
