@@ -15,6 +15,71 @@ block content
                         a.alert-link(href="/auth/login") log in
                         |  to add, edit, or delete contacts.
 
+        // Search Section
+        .row.mb-4
+            .col-12
+                .card.shadow
+                    .card-header.bg-secondary.text-white
+                        h5.mb-0
+                            i.fas.fa-search.me-2
+                            | Search Contacts
+                    .card-body
+                        .row
+                            // Name Search
+                            .col-md-4
+                                h6.border-bottom.pb-2.mb-3
+                                    i.fas.fa-user.me-2
+                                    | Search by Name
+                                .mb-3
+                                    label.form-label(for="searchFirstName") First Name
+                                    input.form-control#searchFirstName(
+                                        type="text",
+                                        placeholder="Search first name..."
+                                    )
+                                .mb-3
+                                    label.form-label(for="searchLastName") Last Name
+                                    input.form-control#searchLastName(
+                                        type="text",
+                                        placeholder="Search last name..."
+                                    )
+                            
+                            // Location Search
+                            .col-md-8
+                                h6.border-bottom.pb-2.mb-3
+                                    i.fas.fa-map-marker-alt.me-2
+                                    | Search by Location
+                                .row
+                                    .col-md-8
+                                        .mb-3
+                                            label.form-label(for="searchAddress") Search Address
+                                            input.form-control#searchAddress(
+                                                type="text",
+                                                placeholder="Enter address to search near..."
+                                            )
+                                            .form-text Search for contacts within a radius of this address
+                                    .col-md-4
+                                        .mb-3
+                                            label.form-label(for="searchRadius") Search Radius
+                                            select.form-select#searchRadius
+                                                option(value="5") 5 miles
+                                                option(value="10", selected) 10 miles
+                                                option(value="25") 25 miles
+                                
+                                .d-flex.gap-2
+                                    button.btn.btn-primary#searchLocationBtn(type="button")
+                                        i.fas.fa-search.me-2
+                                        | Search by Location
+                                    button.btn.btn-outline-secondary#clearSearchBtn(type="button")
+                                        i.fas.fa-times.me-2
+                                        | Clear All Filters
+                
+                // Search Results Info
+                .row.mt-3
+                    .col-12
+                        #searchResults.alert.alert-info(style="display: none;")
+                            i.fas.fa-info-circle.me-2
+                            span#searchResultsText
+
         .row
             // Left Column: Contact List
             .col-lg-6
@@ -125,3 +190,24 @@ block content
 block scripts
     script(src="/js/map.js")
     script(src="/js/contacts.js")
+    script.
+        // Debug information
+        console.log('Index page scripts loaded');
+        console.log('Contacts data:', !{JSON.stringify(contacts || [])});
+        
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Page loaded, checking for map...');
+            
+            // Check if map elements exist
+            const mapContainer = document.getElementById('map-container');
+            const mapElement = document.getElementById('map');
+            
+            if (!mapContainer) {
+                console.error('Map container not found!');
+            } else if (!mapElement) {
+                console.error('Map element not found!');
+            } else {
+                console.log('Map elements found, should initialize...');
+            }
+        });
