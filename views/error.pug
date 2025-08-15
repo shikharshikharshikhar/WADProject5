@@ -1,0 +1,40 @@
+extends layout
+
+block content
+    .container
+        .row.justify-content-center
+            .col-lg-6
+                .card.shadow.mt-5
+                    .card-header.bg-danger.text-white.text-center
+                        h4.mb-0
+                            if error.status === 404
+                                i.fas.fa-search.me-2
+                                | Page Not Found
+                            else
+                                i.fas.fa-exclamation-triangle.me-2
+                                | Error #{error.status || 500}
+                    
+                    .card-body.text-center.p-5
+                        if error.status === 404
+                            i.fas.fa-map-signs.fa-5x.text-muted.mb-4
+                            h5 Oops! Page Not Found
+                            p.text-muted The page you're looking for doesn't exist or has been moved.
+                        else
+                            i.fas.fa-exclamation-triangle.fa-5x.text-warning.mb-4
+                            h5 Something Went Wrong
+                            p.text-muted= message || 'An unexpected error occurred.'
+                        
+                        if error && error.stack && process.env.NODE_ENV === 'development'
+                            .alert.alert-secondary.text-start.mt-4
+                                small
+                                    strong Debug Information:
+                                    pre.mt-2.text-danger= error.stack
+                        
+                        .mt-4
+                            a.btn.btn-primary.me-3(href="/")
+                                i.fas.fa-home.me-2
+                                | Go Home
+                            
+                            button.btn.btn-outline-secondary(onclick="history.back()")
+                                i.fas.fa-arrow-left.me-2
+                                | Go Back
