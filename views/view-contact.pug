@@ -1,0 +1,140 @@
+extends layout
+
+block content
+    .container
+        .row.justify-content-center
+            .col-lg-8
+                .card.shadow
+                    .card-header.bg-info.text-white
+                        .d-flex.justify-content-between.align-items-center
+                            h4.mb-0
+                                i.fas.fa-user.me-2
+                                | #{contact.title} #{contact.firstName} #{contact.lastName}
+                            .btn-group
+                                a.btn.btn-light.btn-sm(href="/")
+                                    i.fas.fa-arrow-left.me-1
+                                    | Back to List
+                                if isAuthenticated
+                                    a.btn.btn-warning.btn-sm(href=`/contacts/${contact.id}/edit`)
+                                        i.fas.fa-edit.me-1
+                                        | Edit
+                    
+                    .card-body
+                        .row
+                            .col-md-6
+                                h5.border-bottom.pb-2.mb-3
+                                    i.fas.fa-info-circle.me-2
+                                    | Contact Information
+                                
+                                .mb-3
+                                    strong
+                                        i.fas.fa-user.me-2
+                                        | Name:
+                                    br
+                                    | #{contact.title} #{contact.firstName} #{contact.lastName}
+                                
+                                if contact.phone
+                                    .mb-3
+                                        strong
+                                            i.fas.fa-phone.me-2
+                                            | Phone:
+                                        br
+                                        a(href=`tel:${contact.phone}`) #{contact.phone}
+                                
+                                if contact.email
+                                    .mb-3
+                                        strong
+                                            i.fas.fa-envelope.me-2
+                                            | Email:
+                                        br
+                                        a(href=`mailto:${contact.email}`) #{contact.email}
+                                
+                                if contact.address
+                                    .mb-3
+                                        strong
+                                            i.fas.fa-map-marker-alt.me-2
+                                            | Address:
+                                        br
+                                        | #{contact.address}
+                                
+                                h6.border-bottom.pb-2.mb-3.mt-4
+                                    i.fas.fa-cog.me-2
+                                    | Contact Preferences
+                                
+                                .row
+                                    .col-4
+                                        .text-center
+                                            if contact.contactByMail
+                                                i.fas.fa-envelope.fa-2x.text-success
+                                                br
+                                                small.text-success Mail
+                                            else
+                                                i.fas.fa-envelope.fa-2x.text-muted
+                                                br
+                                                small.text-muted No Mail
+                                    
+                                    .col-4
+                                        .text-center
+                                            if contact.contactByPhone
+                                                i.fas.fa-phone.fa-2x.text-success
+                                                br
+                                                small.text-success Phone
+                                            else
+                                                i.fas.fa-phone.fa-2x.text-muted
+                                                br
+                                                small.text-muted No Phone
+                                    
+                                    .col-4
+                                        .text-center
+                                            if contact.contactByEmail
+                                                i.fas.fa-at.fa-2x.text-success
+                                                br
+                                                small.text-success Email
+                                            else
+                                                i.fas.fa-at.fa-2x.text-muted
+                                                br
+                                                small.text-muted No Email
+
+                            .col-md-6
+                                h5.border-bottom.pb-2.mb-3
+                                    i.fas.fa-map.me-2
+                                    | Location
+                                
+                                if contact.latitude && contact.longitude && contact.latitude !== 0 && contact.longitude !== 0
+                                    #map-container.mb-3
+                                        #map
+                                    
+                                    .alert.alert-info.py-2
+                                        i.fas.fa-map-marker-alt.me-2
+                                        | Coordinates: #{contact.latitude.toFixed(6)}, #{contact.longitude.toFixed(6)}
+                                else
+                                    .alert.alert-warning.text-center.py-4
+                                        i.fas.fa-map-marker-alt.fa-2x.mb-2
+                                        h6 No Location Data
+                                        p.mb-0 This contact's address could not be located on the map.
+
+block scripts
+    script.
+        // Initialize map for single contact view
+        if (typeof L !== 'undefined') {
+            const lat = #{contact.latitude || 0};
+            const lng = #{contact.longitude || 0};
+            
+            if (lat !== 0 && lng !== 0) {
+                // Initialize map
+                const map = L.map('map').setView([lat, lng], 15);
+                
+                // Add tiles
+                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                }).addTo(map);
+                
+                // Add marker
+                const marker = L.marker([lat, lng]).addTo(map);
+                marker.bindPopup(`
+                    <b>#{contact.firstName} #{contact.lastName}</b><br/>
+                    #{contact.address || 'No address'}
+                `).openPopup();
+            }
+        }
