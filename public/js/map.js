@@ -6,6 +6,7 @@ let markers = [];
 
 // Initialize map when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, initializing map...');
     initializeMap();
     loadContactMarkers();
     setupRowClickHandlers();
@@ -14,6 +15,13 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeMap() {
     try {
         console.log('Initializing map...');
+        
+        // Check if map container exists
+        const mapContainer = document.getElementById('map');
+        if (!mapContainer) {
+            console.error('Map container not found!');
+            return;
+        }
         
         // Initialize map centered on a default location (you can change this)
         map = L.map('map').setView([40.7589, -73.9851], 10); // New York City
@@ -25,9 +33,18 @@ function initializeMap() {
         }).addTo(map);
         
         console.log('Map initialized successfully');
+        
+        // Force map to resize after a short delay
+        setTimeout(() => {
+            if (map) {
+                map.invalidateSize();
+                console.log('Map size invalidated');
+            }
+        }, 100);
+        
     } catch (error) {
         console.error('Error initializing map:', error);
-        showMapError('Failed to initialize map');
+        showMapError('Failed to initialize map: ' + error.message);
     }
 }
 
@@ -37,16 +54,23 @@ function loadContactMarkers() {
         clearMarkers();
         
         const contactRows = document.querySelectorAll('.contact-row');
+        console.log(`Found ${contactRows.length} contact rows`);
+        
         let validLocations = 0;
         
-        contactRows.forEach(row => {
+        contactRows.forEach((row, index) => {
             const lat = parseFloat(row.dataset.lat);
             const lng = parseFloat(row.dataset.lng);
             const name = row.dataset.name;
             
+            console.log(`Contact ${index + 1}: ${name} - lat: ${lat}, lng: ${lng}`);
+            
             if (lat && lng && lat !== 0 && lng !== 0) {
                 addMarker(lat, lng, name, getContactInfo(row));
                 validLocations++;
+                console.log(`✓ Added marker for ${name}`);
+            } else {
+                console.log(`✗ Skipped ${name} - no valid coordinates`);
             }
         });
         
@@ -54,18 +78,17 @@ function loadContactMarkers() {
         
         // If we have markers, fit the map to show them all
         if (markers.length > 0) {
+            console.log('Fitting map bounds to markers...');
             const group = new L.featureGroup(markers);
             map.fitBounds(group.getBounds().pad(0.1));
-        }
-        
-        // Show message if no locations found
-        if (validLocations === 0) {
-            showMapMessage('No contact locations to display on map');
+        } else {
+            console.log('No markers to display - showing default view');
+            showMapMessage('No contact locations to display on map. Add contacts with addresses to see them here.');
         }
         
     } catch (error) {
         console.error('Error loading markers:', error);
-        showMapError('Failed to load contact locations');
+        showMapError('Failed to load contact locations: ' + error.message);
     }
 }
 
@@ -239,10 +262,20 @@ function refreshMap() {
     }
 }
 
+// Clear all markers
+function clearAllMarkers() {
+    clearMarkers();
+}
+
+// Add a single marker (for search functionality)
+function addSingleMarker(lat, lng, name, info) {
+    return addMarker(lat, lng, name, info);
+}
+
 // Export functions for use by other scripts
 window.mapUtils = {
     refreshMap,
-    clearMarkers,
-    addMarker,
+    clearMarkers: clearAllMarkers,
+    addMarker: addSingleMarker,
     showMapMessage
 };
