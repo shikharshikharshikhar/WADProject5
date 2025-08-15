@@ -54,7 +54,7 @@ app.use((req, res, next) => {
 
 // Routes
 app.use('/', require('./routes/index'));
-app.use('/auth', require('./routes/auth'));
+app.use('/auth', require('./routes/auth').router);
 app.use('/contacts', require('./routes/contacts'));
 
 // 404 handler
