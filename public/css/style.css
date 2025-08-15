@@ -1,0 +1,278 @@
+/* Custom styles for Contact Manager */
+
+/* Map Styles */
+#map-container {
+    position: relative;
+    height: 500px;
+    border-radius: 0.375rem;
+    overflow: hidden;
+}
+
+#map {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Contact table enhancements */
+.contact-row {
+    transition: all 0.2s ease;
+}
+
+.contact-row:hover {
+    background-color: #f8f9fa !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.contact-row[data-lat="0"] {
+    opacity: 0.8;
+}
+
+.contact-row[data-lat="0"]:hover {
+    cursor: default !important;
+}
+
+/* Button enhancements */
+.btn {
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+/* Card shadows and animations */
+.card {
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1) !important;
+}
+
+/* Navigation enhancements */
+.navbar-brand {
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.navbar-brand:hover {
+    transform: scale(1.05);
+}
+
+/* Form enhancements */
+.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.form-check-input:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+/* Alert customizations */
+.alert {
+    border-radius: 0.5rem;
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Footer styling */
+footer {
+    margin-top: auto;
+    background: linear-gradient(135deg, #212529 0%, #495057 100%);
+}
+
+/* Loading states */
+.loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,0.6),
+        transparent
+    );
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    #map-container {
+        height: 400px;
+    }
+    
+    .card-body.p-0 .table-responsive {
+        font-size: 0.9rem;
+    }
+    
+    .btn-group-sm .btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+    }
+    
+    .display-4 {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .container-fluid {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    #map-container {
+        height: 300px;
+    }
+    
+    .btn-lg {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+    }
+}
+
+/* Table responsiveness on mobile */
+@media (max-width: 992px) {
+    .table-responsive {
+        border: none;
+    }
+    
+    .table td, .table th {
+        padding: 0.5rem 0.25rem;
+        vertical-align: middle;
+    }
+    
+    .btn-group-sm .btn {
+        padding: 0.125rem 0.25rem;
+        font-size: 0.75rem;
+    }
+}
+
+/* Enhanced tooltips and popovers */
+.tooltip {
+    font-size: 0.875rem;
+}
+
+/* Contact preferences icons */
+.contact-preferences i {
+    margin-right: 0.25rem;
+    width: 1rem;
+    text-align: center;
+}
+
+/* Status indicators */
+.status-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+}
+
+.status-online {
+    background-color: #28a745;
+}
+
+.status-geocoded {
+    background-color: #17a2b8;
+}
+
+.status-no-location {
+    background-color: #6c757d;
+}
+
+/* Map popup customizations */
+.leaflet-popup-content {
+    margin: 8px 12px;
+    line-height: 1.4;
+}
+
+.leaflet-popup-content h6 {
+    margin: 0 0 4px 0;
+    font-weight: 600;
+}
+
+/* Form validation styles */
+.is-valid {
+    border-color: #28a745;
+}
+
+.is-invalid {
+    border-color: #dc3545;
+}
+
+.invalid-feedback {
+    display: block;
+    font-size: 0.875em;
+    color: #dc3545;
+    margin-top: 0.25rem;
+}
+
+/* Loading spinner */
+.spinner-grow-sm {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Print styles */
+@media print {
+    .navbar, .btn, .card-header, footer {
+        display: none !important;
+    }
+    
+    .card {
+        border: 1px solid #000 !important;
+        box-shadow: none !important;
+    }
+    
+    #map-container {
+        display: none !important;
+    }
+}
