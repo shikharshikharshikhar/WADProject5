@@ -1,5 +1,16 @@
 const express = require('express');
 const router = express.Router();
+const geo = require('node-geocoder');
+
+// Configure geocoder for search functionality
+const geocoder = geo({
+    provider: 'openstreetmap',
+    headers: { 
+        'user-agent': 'Contact Manager App <contact@yourapp.com>' // Replace with your email
+    }
+});
+
+// Home page - displays all contacts and map
 
 // Home page - displays all contacts and map
 router.get('/', async (req, res) => {
@@ -88,6 +99,49 @@ router.get('/about', (req, res) => {
         user: req.session.user || null,
         isAuthenticated: !!req.session.user
     });
+});
+
+// Geocoding API endpoint for search functionality
+router.post('/api/geocode', async (req, res) => {
+    try {
+        const { address } = req.body;
+        
+        if (!address || !address.trim()) {
+            return res.status(400).json({
+                success: false,
+                error: 'Address is required'
+            });
+        }
+        
+        console.log(`Geocoding search address: ${address}`);
+        
+        const result = await geocoder.geocode(address.trim());
+        
+        if (result.length > 0) {
+            const location = result[0];
+            res.json({
+                success: true,
+                latitude: location.latitude,
+                longitude: location.longitude,
+                formattedAddress: location.formattedAddress || address,
+                city: location.city,
+                state: location.administrativeLevels?.level1short,
+                country: location.country
+            });
+        } else {
+            res.status(404).json({
+                success: false,
+                error: 'Address not found'
+            });
+        }
+        
+    } catch (error) {
+        console.error('Geocoding API error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Geocoding failed'
+        });
+    }
 });
 
 // Health check endpoint (useful for deployment monitoring)
