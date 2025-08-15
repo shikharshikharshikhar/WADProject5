@@ -1,0 +1,53 @@
+extends layout
+
+block content
+    .container
+        .row.justify-content-center
+            .col-md-6.col-lg-4
+                .card.shadow.mt-5
+                    .card-header.bg-primary.text-white.text-center
+                        h4.mb-0
+                            i.fas.fa-sign-in-alt.me-2
+                            | Login
+                    
+                    .card-body.p-4
+                        form(method="POST", action="/auth/login")
+                            .mb-3
+                                label.form-label(for="username")
+                                    i.fas.fa-user.me-2
+                                    | Username
+                                input.form-control#username(
+                                    type="text",
+                                    name="username",
+                                    required,
+                                    placeholder="Enter your username",
+                                    value=username || ''
+                                )
+                            
+                            .mb-3
+                                label.form-label(for="password")
+                                    i.fas.fa-lock.me-2
+                                    | Password
+                                input.form-control#password(
+                                    type="password",
+                                    name="password",
+                                    required,
+                                    placeholder="Enter your password"
+                                )
+                            
+                            .d-grid
+                                button.btn.btn-primary.btn-lg(type="submit")
+                                    i.fas.fa-sign-in-alt.me-2
+                                    | Login
+                    
+                    .card-footer.text-center.bg-light
+                        p.mb-0 Don't have an account? 
+                            a(href="/auth/signup") Sign up here
+                        
+                        .mt-2
+                            small.text-muted
+                                strong Demo Account:
+                                br
+                                | Username: rcnj
+                                br  
+                                | Password: password
