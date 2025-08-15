@@ -1,0 +1,152 @@
+extends layout
+
+block content
+    .container
+        .row.justify-content-center
+            .col-lg-8
+                .card.shadow
+                    .card-header.bg-primary.text-white
+                        h4.mb-0
+                            i.fas.fa-plus.me-2
+                            | Add New Contact
+                    
+                    .card-body
+                        form(method="POST", action="/contacts", id="contactForm")
+                            .row
+                                // Personal Information
+                                .col-md-6
+                                    h5.border-bottom.pb-2.mb-3
+                                        i.fas.fa-user.me-2
+                                        | Personal Information
+                                    
+                                    .mb-3
+                                        label.form-label(for="title") Title
+                                        select.form-select#title(name="title")
+                                            option(value="") Select title (optional)
+                                            option(value="Mr.") Mr.
+                                            option(value="Mrs.") Mrs.
+                                            option(value="Ms.") Ms.
+                                            option(value="Dr.") Dr.
+                                    
+                                    .mb-3
+                                        label.form-label(for="firstName") First Name *
+                                        input.form-control#firstName(
+                                            type="text",
+                                            name="firstName",
+                                            required,
+                                            placeholder="Enter first name"
+                                        )
+                                    
+                                    .mb-3
+                                        label.form-label(for="lastName") Last Name *
+                                        input.form-control#lastName(
+                                            type="text",
+                                            name="lastName",
+                                            required,
+                                            placeholder="Enter last name"
+                                        )
+                                    
+                                    .mb-3
+                                        label.form-label(for="phone") Phone Number
+                                        input.form-control#phone(
+                                            type="tel",
+                                            name="phone",
+                                            placeholder="(555) 123-4567"
+                                        )
+                                    
+                                    .mb-3
+                                        label.form-label(for="email") Email Address
+                                        input.form-control#email(
+                                            type="email",
+                                            name="email",
+                                            placeholder="name@example.com"
+                                        )
+
+                                // Address & Contact Preferences
+                                .col-md-6
+                                    h5.border-bottom.pb-2.mb-3
+                                        i.fas.fa-map-marker-alt.me-2
+                                        | Address & Preferences
+                                    
+                                    .mb-3
+                                        label.form-label(for="address") Address
+                                        textarea.form-control#address(
+                                            name="address",
+                                            rows="3",
+                                            placeholder="Enter full address for mapping"
+                                        )
+                                        .form-text We'll try to locate this address on the map
+                                    
+                                    .mb-3
+                                        label.form-label Contact Preferences
+                                        .form-check
+                                            input.form-check-input#contactByMail(
+                                                type="checkbox",
+                                                name="contactByMail",
+                                                value="1"
+                                            )
+                                            label.form-check-label(for="contactByMail")
+                                                i.fas.fa-envelope.me-2
+                                                | Contact by Mail
+                                        
+                                        .form-check
+                                            input.form-check-input#contactByPhone(
+                                                type="checkbox",
+                                                name="contactByPhone",
+                                                value="1"
+                                            )
+                                            label.form-check-label(for="contactByPhone")
+                                                i.fas.fa-phone.me-2
+                                                | Contact by Phone
+                                        
+                                        .form-check
+                                            input.form-check-input#contactByEmail(
+                                                type="checkbox",
+                                                name="contactByEmail",
+                                                value="1"
+                                            )
+                                            label.form-check-label(for="contactByEmail")
+                                                i.fas.fa-at.me-2
+                                                | Contact by Email
+                            
+                            .row.mt-4
+                                .col-12
+                                    .d-flex.justify-content-between
+                                        a.btn.btn-secondary(href="/")
+                                            i.fas.fa-arrow-left.me-2
+                                            | Back to Contacts
+                                        
+                                        button.btn.btn-primary.btn-lg(type="submit")
+                                            i.fas.fa-save.me-2
+                                            | Save Contact
+
+                        .mt-3.p-3.bg-light.rounded
+                            h6.mb-2
+                                i.fas.fa-info-circle.me-2
+                                | Address Geocoding
+                            p.mb-0.small.text-muted If you provide an address, we'll automatically find its location on the map. This helps with mapping and location-based features.
+
+block scripts
+    script.
+        // Form validation and enhancement
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            
+            if (!firstName || !lastName) {
+                e.preventDefault();
+                alert('Please enter both first and last name.');
+                return false;
+            }
+        });
+        
+        // Phone number formatting
+        document.getElementById('phone').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 6) {
+                value = `(${value.slice(0,3)}) ${value.slice(3,6)}-${value.slice(6,10)}`;
+            } else if (value.length >= 3) {
+                value = `(${value.slice(0,3)}) ${value.slice(3)}`;
+            }
+            e.target.value = value;
+        });
