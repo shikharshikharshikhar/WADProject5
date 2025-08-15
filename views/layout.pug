@@ -1,0 +1,105 @@
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        title= title ? `${title} | Contact Manager` : 'Contact Manager'
+        
+        // Bootstrap CSS
+        link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css", rel="stylesheet")
+        
+        // Leaflet CSS
+        link(rel="stylesheet", href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css")
+        
+        // Font Awesome for icons
+        link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css")
+        
+        // Custom CSS
+        link(rel="stylesheet", href="/css/style.css")
+        
+    body
+        // Navigation
+        nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
+            .container
+                a.navbar-brand(href="/")
+                    i.fas.fa-address-book.me-2
+                    | Contact Manager
+                
+                button.navbar-toggler(type="button", data-bs-toggle="collapse", data-bs-target="#navbarNav")
+                    span.navbar-toggler-icon
+                
+                .collapse.navbar-collapse#navbarNav
+                    ul.navbar-nav.me-auto
+                        li.nav-item
+                            a.nav-link(href="/", class=currentPage === 'home' ? 'active' : '') 
+                                i.fas.fa-home.me-1
+                                | Home
+                        
+                        if isAuthenticated
+                            li.nav-item
+                                a.nav-link(href="/contacts/add", class=currentPage === 'add' ? 'active' : '')
+                                    i.fas.fa-plus.me-1
+                                    | Add Contact
+                    
+                    ul.navbar-nav
+                        if isAuthenticated
+                            li.nav-item.dropdown
+                                a.nav-link.dropdown-toggle(href="#", role="button", data-bs-toggle="dropdown")
+                                    i.fas.fa-user.me-1
+                                    | #{user.username}
+                                ul.dropdown-menu
+                                    li
+                                        a.dropdown-item(href="/auth/logout")
+                                            i.fas.fa-sign-out-alt.me-1
+                                            | Logout
+                        else
+                            li.nav-item
+                                a.nav-link(href="/auth/login", class=currentPage === 'login' ? 'active' : '')
+                                    i.fas.fa-sign-in-alt.me-1
+                                    | Login
+                            li.nav-item
+                                a.nav-link(href="/auth/signup", class=currentPage === 'signup' ? 'active' : '')
+                                    i.fas.fa-user-plus.me-1
+                                    | Sign Up
+
+        // Flash messages
+        .container.mt-3
+            if error
+                .alert.alert-danger.alert-dismissible.fade.show
+                    i.fas.fa-exclamation-triangle.me-2
+                    | #{error}
+                    button.btn-close(type="button", data-bs-dismiss="alert")
+            
+            if success
+                .alert.alert-success.alert-dismissible.fade.show
+                    i.fas.fa-check-circle.me-2
+                    | #{success}
+                    button.btn-close(type="button", data-bs-dismiss="alert")
+            
+            if info
+                .alert.alert-info.alert-dismissible.fade.show
+                    i.fas.fa-info-circle.me-2
+                    | #{info}
+                    button.btn-close(type="button", data-bs-dismiss="alert")
+
+        // Main content
+        main
+            block content
+
+        // Footer
+        footer.bg-dark.text-light.py-4.mt-5
+            .container
+                .row
+                    .col-md-6
+                        h5 Contact Manager
+                        p A full-featured contact management system with mapping capabilities.
+                    .col-md-6.text-md-end
+                        p Built with Node.js, Express, and Leaflet
+                        p.mb-0 &copy; 2024 Contact Manager
+
+        // Scripts
+        script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js")
+        script(src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js")
+        script(src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js")
+        
+        block scripts
