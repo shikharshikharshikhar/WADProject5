@@ -1,0 +1,179 @@
+extends layout
+
+block content
+    .container
+        .row.justify-content-center
+            .col-lg-8
+                .card.shadow
+                    .card-header.bg-warning.text-dark
+                        h4.mb-0
+                            i.fas.fa-edit.me-2
+                            | Edit Contact: #{contact.firstName} #{contact.lastName}
+                    
+                    .card-body
+                        form(method="POST", action=`/contacts/${contact.id}`, id="contactForm")
+                            input(type="hidden", name="_method", value="PUT")
+                            
+                            .row
+                                // Personal Information
+                                .col-md-6
+                                    h5.border-bottom.pb-2.mb-3
+                                        i.fas.fa-user.me-2
+                                        | Personal Information
+                                    
+                                    .mb-3
+                                        label.form-label(for="title") Title
+                                        select.form-select#title(name="title")
+                                            option(value="") Select title (optional)
+                                            option(value="Mr.", selected=contact.title === 'Mr.') Mr.
+                                            option(value="Mrs.", selected=contact.title === 'Mrs.') Mrs.
+                                            option(value="Ms.", selected=contact.title === 'Ms.') Ms.
+                                            option(value="Dr.", selected=contact.title === 'Dr.') Dr.
+                                    
+                                    .mb-3
+                                        label.form-label(for="firstName") First Name *
+                                        input.form-control#firstName(
+                                            type="text",
+                                            name="firstName",
+                                            required,
+                                            placeholder="Enter first name",
+                                            value=contact.firstName
+                                        )
+                                    
+                                    .mb-3
+                                        label.form-label(for="lastName") Last Name *
+                                        input.form-control#lastName(
+                                            type="text",
+                                            name="lastName",
+                                            required,
+                                            placeholder="Enter last name",
+                                            value=contact.lastName
+                                        )
+                                    
+                                    .mb-3
+                                        label.form-label(for="phone") Phone Number
+                                        input.form-control#phone(
+                                            type="tel",
+                                            name="phone",
+                                            placeholder="(555) 123-4567",
+                                            value=contact.phone
+                                        )
+                                    
+                                    .mb-3
+                                        label.form-label(for="email") Email Address
+                                        input.form-control#email(
+                                            type="email",
+                                            name="email",
+                                            placeholder="name@example.com",
+                                            value=contact.email
+                                        )
+
+                                // Address & Contact Preferences
+                                .col-md-6
+                                    h5.border-bottom.pb-2.mb-3
+                                        i.fas.fa-map-marker-alt.me-2
+                                        | Address & Preferences
+                                    
+                                    .mb-3
+                                        label.form-label(for="address") Address
+                                        textarea.form-control#address(
+                                            name="address",
+                                            rows="3",
+                                            placeholder="Enter full address for mapping"
+                                        )= contact.address
+                                        .form-text We'll update the map location if you change the address
+                                    
+                                    if contact.latitude && contact.longitude && contact.latitude !== 0 && contact.longitude !== 0
+                                        .mb-3
+                                            .alert.alert-info.py-2
+                                                i.fas.fa-map-marker-alt.me-2
+                                                | Current location: #{contact.latitude.toFixed(6)}, #{contact.longitude.toFixed(6)}
+                                    
+                                    .mb-3
+                                        label.form-label Contact Preferences
+                                        .form-check
+                                            input.form-check-input#contactByMail(
+                                                type="checkbox",
+                                                name="contactByMail",
+                                                value="1",
+                                                checked=contact.contactByMail
+                                            )
+                                            label.form-check-label(for="contactByMail")
+                                                i.fas.fa-envelope.me-2
+                                                | Contact by Mail
+                                        
+                                        .form-check
+                                            input.form-check-input#contactByPhone(
+                                                type="checkbox",
+                                                name="contactByPhone",
+                                                value="1",
+                                                checked=contact.contactByPhone
+                                            )
+                                            label.form-check-label(for="contactByPhone")
+                                                i.fas.fa-phone.me-2
+                                                | Contact by Phone
+                                        
+                                        .form-check
+                                            input.form-check-input#contactByEmail(
+                                                type="checkbox",
+                                                name="contactByEmail",
+                                                value="1",
+                                                checked=contact.contactByEmail
+                                            )
+                                            label.form-check-label(for="contactByEmail")
+                                                i.fas.fa-at.me-2
+                                                | Contact by Email
+                            
+                            .row.mt-4
+                                .col-12
+                                    .d-flex.justify-content-between
+                                        a.btn.btn-secondary(href="/")
+                                            i.fas.fa-arrow-left.me-2
+                                            | Back to Contacts
+                                        
+                                        .btn-group
+                                            button.btn.btn-success.btn-lg(type="submit")
+                                                i.fas.fa-save.me-2
+                                                | Update Contact
+                                            
+                                            button.btn.btn-outline-danger.btn-lg.delete-btn(
+                                                type="button",
+                                                data-contact-id=contact.id,
+                                                data-contact-name=`${contact.firstName} ${contact.lastName}`
+                                            )
+                                                i.fas.fa-trash.me-2
+                                                | Delete
+
+        // Contact deletion modal
+        .modal.fade#deleteModal(tabindex="-1")
+            .modal-dialog
+                .modal-content
+                    .modal-header
+                        h5.modal-title
+                            i.fas.fa-exclamation-triangle.text-warning.me-2
+                            | Confirm Deletion
+                        button.btn-close(type="button", data-bs-dismiss="modal")
+                    .modal-body
+                        p Are you sure you want to delete this contact?
+                        p.fw-bold#contactToDelete
+                        p.text-muted This action cannot be undone.
+                    .modal-footer
+                        button.btn.btn-secondary(type="button", data-bs-dismiss="modal") Cancel
+                        button.btn.btn-danger#confirmDelete Permanently Delete
+
+block scripts
+    script(src="/js/contacts.js")
+    script.
+        // Form validation and enhancement
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            
+            if (!firstName || !lastName) {
+                e.preventDefault();
+                alert('Please enter both first and last name.');
+                return false;
+            }
+        });
+        
+        // Phone number formatting
