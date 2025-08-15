@@ -1,0 +1,96 @@
+extends layout
+
+block content
+    .container
+        .row.justify-content-center
+            .col-md-6.col-lg-4
+                .card.shadow.mt-5
+                    .card-header.bg-success.text-white.text-center
+                        h4.mb-0
+                            i.fas.fa-user-plus.me-2
+                            | Sign Up
+                    
+                    .card-body.p-4
+                        form(method="POST", action="/auth/signup", id="signupForm")
+                            .mb-3
+                                label.form-label(for="username")
+                                    i.fas.fa-user.me-2
+                                    | Username
+                                input.form-control#username(
+                                    type="text",
+                                    name="username",
+                                    required,
+                                    minlength="3",
+                                    placeholder="Choose a username",
+                                    value=username || ''
+                                )
+                                .form-text Minimum 3 characters
+                            
+                            .mb-3
+                                label.form-label(for="password")
+                                    i.fas.fa-lock.me-2
+                                    | Password
+                                input.form-control#password(
+                                    type="password",
+                                    name="password",
+                                    required,
+                                    minlength="6",
+                                    placeholder="Choose a password"
+                                )
+                                .form-text Minimum 6 characters
+                            
+                            .mb-3
+                                label.form-label(for="confirmPassword")
+                                    i.fas.fa-lock.me-2
+                                    | Confirm Password
+                                input.form-control#confirmPassword(
+                                    type="password",
+                                    name="confirmPassword",
+                                    required,
+                                    placeholder="Confirm your password"
+                                )
+                                .form-text.text-danger#passwordError(style="display: none;") Passwords do not match
+                            
+                            .d-grid
+                                button.btn.btn-success.btn-lg#submitBtn(type="submit")
+                                    i.fas.fa-user-plus.me-2
+                                    | Create Account
+                    
+                    .card-footer.text-center.bg-light
+                        p.mb-0 Already have an account? 
+                            a(href="/auth/login") Login here
+
+block scripts
+    script.
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const errorDiv = document.getElementById('passwordError');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            if (password !== confirmPassword) {
+                e.preventDefault();
+                errorDiv.style.display = 'block';
+                submitBtn.disabled = true;
+                return false;
+            } else {
+                errorDiv.style.display = 'none';
+                submitBtn.disabled = false;
+            }
+        });
+        
+        // Real-time password validation
+        document.getElementById('confirmPassword').addEventListener('input', function() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = this.value;
+            const errorDiv = document.getElementById('passwordError');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            if (password !== confirmPassword && confirmPassword.length > 0) {
+                errorDiv.style.display = 'block';
+                submitBtn.disabled = true;
+            } else {
+                errorDiv.style.display = 'none';
+                submitBtn.disabled = false;
+            }
+        });
